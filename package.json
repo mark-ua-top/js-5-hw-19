@@ -1,4 +1,5 @@
 {
+  "homepage": "https://mark-ua-top.github.io/js-5-hw-19/",
   "name": "js-5-hw-19",
   "version": "0.1.0",
   "private": true,
@@ -7,8 +8,10 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^13.5.0",
+    "gh-pages": "^6.3.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
+    "react-loader-spinner": "^8.0.2",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
@@ -16,7 +19,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build --branch gh-pages"
   },
   "eslintConfig": {
     "extends": [
