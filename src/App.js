@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { Searchbar } from './components/Searchbar/Searchbar';
 import { ImageGallery } from './components/ImageGallery/ImageGallery';
 import { Button } from './components/Button/Button';
@@ -45,21 +45,47 @@ function App() {
     setTotalHits(0);
   }, []);
 
-  const handleLoadMore = () => setPage(prev => prev + 1);
-  const openModal = url => setLargeImageURL(url);
-  const closeModal = () => setLargeImageURL(null);
+  const handleLoadMore = useCallback(() => {
+    setPage(prev => prev + 1);
+  }, []);
 
-  const noMoreImages = images.length >= totalHits;
+  const openModal = useCallback(url => {
+    setLargeImageURL(url);
+  }, []);
+
+  const closeModal = useCallback(() => {
+    setLargeImageURL(null);
+  }, []);
+
+  const memoizedImages = useMemo(() => images, [images]);
+
+  const noMoreImages = useMemo(() => {
+    return images.length >= totalHits && totalHits !== 0;
+  }, [images.length, totalHits]);
 
   return (
     <div className="App">
       <Searchbar onSubmit={handleSearch} />
-      {images.length === 0 && !loading && <p className="no-results">No results found</p>}
-      <ImageGallery images={images} onClick={openModal} />
+
+      {memoizedImages.length === 0 && !loading && (
+        <p className="no-results">No results found</p>
+      )}
+
+      <ImageGallery images={memoizedImages} onClick={openModal} />
+
       {loading && <Loader />}
-      {!noMoreImages && images.length > 0 && !loading && <Button onClick={handleLoadMore} />}
-      {noMoreImages && images.length > 0 && <p className="no-more">No more images</p>}
-      {largeImageURL && <Modal largeImageURL={largeImageURL} onClose={closeModal} />}
+
+      {!noMoreImages && memoizedImages.length > 0 && !loading && (
+        <Button onClick={handleLoadMore} />
+      )}
+
+      {noMoreImages && memoizedImages.length > 0 && (
+        <p className="no-more">No more images</p>
+      )}
+
+      {largeImageURL && (
+        <Modal largeImageURL={largeImageURL} onClose={closeModal} />
+      )}
     </div>
   );
 }
